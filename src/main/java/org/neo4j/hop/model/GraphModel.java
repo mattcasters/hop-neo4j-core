@@ -6,12 +6,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hop.core.gui.plugin.GuiMetaStoreElement;
+import org.apache.hop.core.gui.plugin.GuiPlugin;
+import org.apache.hop.metastore.IHopMetaStoreElement;
+import org.apache.hop.metastore.api.IMetaStore;
+import org.apache.hop.metastore.persist.MetaStoreFactory;
+import org.apache.hop.metastore.util.HopDefaults;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.metastore.persist.MetaStoreAttribute;
 import org.apache.hop.metastore.persist.MetaStoreElementType;
+import org.neo4j.hop.shared.NeoConnection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +26,9 @@ import java.util.List;
 
 @MetaStoreElementType(
   name = "Neo4j Graph Model",
-  description = "Description of the nodes, relationships, indexes... of a Neo4j graph" )
-public class GraphModel {
+  description = "Description of the nodes, relationships, indexes... of a Neo4j graph"
+)
+public class GraphModel implements IHopMetaStoreElement<GraphModel> {
   protected String name;
 
   @MetaStoreAttribute
@@ -375,5 +383,13 @@ public class GraphModel {
       }
     }
     return null;
+  }
+
+  @Override public MetaStoreFactory<GraphModel> getFactory( IMetaStore metaStore ) {
+    return createFactory( metaStore );
+  }
+
+  public static final MetaStoreFactory<GraphModel> createFactory( IMetaStore metaStore ) {
+    return new MetaStoreFactory<>( GraphModel.class, metaStore, HopDefaults.NAMESPACE );
   }
 }

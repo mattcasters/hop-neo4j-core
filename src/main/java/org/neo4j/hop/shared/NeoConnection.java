@@ -1,6 +1,22 @@
 package org.neo4j.hop.shared;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hop.core.Const;
+import org.apache.hop.core.encryption.Encr;
+import org.apache.hop.core.gui.plugin.GuiMetaStoreElement;
+import org.apache.hop.core.gui.plugin.GuiPlugin;
+import org.apache.hop.core.logging.ILogChannel;
+import org.apache.hop.core.logging.LogChannel;
+import org.apache.hop.core.row.value.ValueMetaString;
+import org.apache.hop.core.util.Utils;
+import org.apache.hop.core.variables.IVariables;
+import org.apache.hop.core.variables.Variables;
+import org.apache.hop.metastore.IHopMetaStoreElement;
+import org.apache.hop.metastore.api.IMetaStore;
+import org.apache.hop.metastore.persist.MetaStoreAttribute;
+import org.apache.hop.metastore.persist.MetaStoreElementType;
+import org.apache.hop.metastore.persist.MetaStoreFactory;
+import org.apache.hop.metastore.util.HopDefaults;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Config;
 import org.neo4j.driver.Driver;
@@ -10,16 +26,6 @@ import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
 import org.neo4j.driver.Value;
-import org.apache.hop.core.Const;
-import org.apache.hop.core.encryption.Encr;
-import org.apache.hop.core.logging.LogChannel;
-import org.apache.hop.core.logging.ILogChannel;
-import org.apache.hop.core.row.value.ValueMetaString;
-import org.apache.hop.core.util.Utils;
-import org.apache.hop.core.variables.IVariables;
-import org.apache.hop.core.variables.Variables;
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
-import org.apache.hop.metastore.persist.MetaStoreElementType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @MetaStoreElementType( name = "Neo4j Connection", description = "A shared connection to a Neo4j server" )
-public class NeoConnection extends Variables {
+public class NeoConnection extends Variables implements IHopMetaStoreElement<NeoConnection> {
   private String name;
 
   @MetaStoreAttribute
@@ -661,5 +667,13 @@ public class NeoConnection extends Variables {
    */
   public void setVersion4( boolean version4 ) {
     this.version4 = version4;
+  }
+
+  @Override public MetaStoreFactory<NeoConnection> getFactory( IMetaStore metaStore ) {
+    return createFactory( metaStore );
+  }
+
+  public static final MetaStoreFactory<NeoConnection> createFactory( IMetaStore metaStore ) {
+    return new MetaStoreFactory<>( NeoConnection.class, metaStore, HopDefaults.NAMESPACE );
   }
 }

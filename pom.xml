@@ -77,6 +77,14 @@
           <include>**/*.svg</include>
         </includes>
       </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xul</include>
+          <include>**/*.svg</include>
+        </includes>
+      </resource>
     </resources>
 
     <plugins>

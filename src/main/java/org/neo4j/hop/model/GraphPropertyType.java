@@ -60,13 +60,13 @@ public enum GraphPropertyType {
 
 
   /**
-   * Convert the given Kettle value to a Neo4j data type
+   * Convert the given Hop value to a Neo4j data type
    *
    * @param valueMeta
    * @param valueData
    * @return
    */
-  public Object convertFromKettle( IValueMeta valueMeta, Object valueData ) throws HopValueException {
+  public Object convertFromHop( IValueMeta valueMeta, Object valueData ) throws HopValueException {
 
     if ( valueMeta.isNull( valueData ) ) {
       return null;
@@ -97,7 +97,7 @@ public enum GraphPropertyType {
     }
   }
 
-  public static final GraphPropertyType getTypeFromKettle( IValueMeta valueMeta ) {
+  public static final GraphPropertyType getTypeFromHop( IValueMeta valueMeta ) {
     switch ( valueMeta.getType() ) {
       case IValueMeta.TYPE_STRING:
         return GraphPropertyType.String;
