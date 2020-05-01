@@ -59,7 +59,7 @@ public class GraphRelationship {
     this();
     List<GraphProperty> properties = new ArrayList<>();
     for ( GraphProperty property : graphRelationship.getProperties() ) {
-      properties.add( new GraphProperty( property.getName(), property.getDescription(), property.getType(), property.isPrimary() ) );
+      properties.add( new GraphProperty( property ) );
     }
 
     setName( graphRelationship.getName() );

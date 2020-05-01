@@ -17,7 +17,7 @@
     </license>
   </licenses>
   <properties>
-    <hop.version>0.1.0-SNAPSHOT</hop.version>
+    <hop.version>0.20-SNAPSHOT</hop.version>
     <mockito-all.version>1.9.5</mockito-all.version>
     <junit.version>4.4</junit.version>
     <neo4j.driver.version>4.0.0</neo4j.driver.version>
