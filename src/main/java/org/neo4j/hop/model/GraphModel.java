@@ -11,7 +11,6 @@ import org.apache.hop.core.gui.plugin.GuiPlugin;
 import org.apache.hop.metastore.IHopMetaStoreElement;
 import org.apache.hop.metastore.api.IMetaStore;
 import org.apache.hop.metastore.persist.MetaStoreFactory;
-import org.apache.hop.metastore.util.HopDefaults;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -390,6 +389,6 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
   }
 
   public static final MetaStoreFactory<GraphModel> createFactory( IMetaStore metaStore ) {
-    return new MetaStoreFactory<>( GraphModel.class, metaStore, HopDefaults.NAMESPACE );
+    return new MetaStoreFactory<>( GraphModel.class, metaStore );
   }
 }

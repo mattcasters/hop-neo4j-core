@@ -3,8 +3,6 @@ package org.neo4j.hop.shared;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hop.core.Const;
 import org.apache.hop.core.encryption.Encr;
-import org.apache.hop.core.gui.plugin.GuiMetaStoreElement;
-import org.apache.hop.core.gui.plugin.GuiPlugin;
 import org.apache.hop.core.logging.ILogChannel;
 import org.apache.hop.core.logging.LogChannel;
 import org.apache.hop.core.row.value.ValueMetaString;
@@ -16,7 +14,6 @@ import org.apache.hop.metastore.api.IMetaStore;
 import org.apache.hop.metastore.persist.MetaStoreAttribute;
 import org.apache.hop.metastore.persist.MetaStoreElementType;
 import org.apache.hop.metastore.persist.MetaStoreFactory;
-import org.apache.hop.metastore.util.HopDefaults;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Config;
 import org.neo4j.driver.Driver;
@@ -674,6 +671,6 @@ public class NeoConnection extends Variables implements IHopMetaStoreElement<Neo
   }
 
   public static final MetaStoreFactory<NeoConnection> createFactory( IMetaStore metaStore ) {
-    return new MetaStoreFactory<>( NeoConnection.class, metaStore, HopDefaults.NAMESPACE );
+    return new MetaStoreFactory<>( NeoConnection.class, metaStore );
   }
 }

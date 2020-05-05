@@ -1,9 +1,6 @@
 package org.neo4j.hop.core;
 
-import org.apache.hop.metastore.util.HopDefaults;
-
 public class Neo4jDefaults {
-  public static String NAMESPACE = HopDefaults.NAMESPACE;
 
   public static String TRANS_NODE_UPDATES_GROUP = "NODE_UPDATES";
 
