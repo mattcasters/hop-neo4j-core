@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class CypherWorkbenchBeerImporterTest {
+public class CypherWorkbenchBeerImporterTest extends CypherWorkbenchBaseImporterTest {
 
   private GraphModel graphModel;
 
