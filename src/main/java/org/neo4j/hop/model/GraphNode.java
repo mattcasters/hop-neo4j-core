@@ -1,31 +1,31 @@
 package org.neo4j.hop.model;
 
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
+import org.apache.hop.metadata.api.HopMetadataProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GraphNode {
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String name;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String description;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected List<String> labels;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected List<GraphProperty> properties;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected GraphPresentation presentation;
 
   public GraphNode() {
     labels = new ArrayList<>();
     properties = new ArrayList<>();
-    presentation = new GraphPresentation( 0,0 );
+    presentation = new GraphPresentation( 0, 0 );
   }
 
   public GraphNode( String name, String description, List<String> labels, List<GraphProperty> properties ) {
@@ -33,7 +33,7 @@ public class GraphNode {
     this.description = description;
     this.labels = labels;
     this.properties = properties;
-    this.presentation = new GraphPresentation( 0,0 );
+    this.presentation = new GraphPresentation( 0, 0 );
   }
 
   public GraphNode( GraphNode graphNode ) {

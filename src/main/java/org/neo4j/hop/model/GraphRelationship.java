@@ -1,28 +1,28 @@
 package org.neo4j.hop.model;
 
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
+import org.apache.hop.metadata.api.HopMetadataProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GraphRelationship {
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String name;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String description;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String label;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected List<GraphProperty> properties;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String nodeSource;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String nodeTarget;
 
   public GraphRelationship() {

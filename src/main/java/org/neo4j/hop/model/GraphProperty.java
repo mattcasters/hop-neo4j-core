@@ -1,30 +1,30 @@
 package org.neo4j.hop.model;
 
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
+import org.apache.hop.metadata.api.HopMetadataProperty;
 
 import java.util.Objects;
 
 public class GraphProperty {
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String name;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String description;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected GraphPropertyType type;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected boolean primary;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected boolean mandatory;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected boolean unique;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected boolean indexed;
 
   public GraphProperty() {
@@ -41,7 +41,7 @@ public class GraphProperty {
   }
 
   public GraphProperty( GraphProperty property ) {
-    this(property.name, property.description, property.type, property.primary, property.mandatory, property.unique, property.indexed);
+    this( property.name, property.description, property.type, property.primary, property.mandatory, property.unique, property.indexed );
   }
 
   @Override public boolean equals( Object o ) {

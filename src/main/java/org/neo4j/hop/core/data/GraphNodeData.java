@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.neo4j.driver.Value;
 import org.neo4j.driver.types.Node;
 import org.apache.hop.core.Const;
+import org.neo4j.driver.types.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ public class GraphNodeData {
     }
     for ( String propertyKey : node.keys() ) {
       Value propertyValue = node.get( propertyKey );
+      Point point = propertyValue.asPoint();
       Object propertyObject = propertyValue.asObject();
       GraphPropertyDataType propertyType = GraphPropertyDataType.getTypeFromNeo4jValue(propertyObject);
       properties.add( new GraphPropertyData( propertyKey, propertyObject, propertyType, false ) );

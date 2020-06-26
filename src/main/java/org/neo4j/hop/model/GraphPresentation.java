@@ -1,13 +1,13 @@
 package org.neo4j.hop.model;
 
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
+import org.apache.hop.metadata.api.HopMetadataProperty;
 
 public class GraphPresentation {
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected int x;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected int y;
 
   public GraphPresentation() {

@@ -6,37 +6,34 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
-import org.apache.hop.core.gui.plugin.GuiMetaStoreElement;
-import org.apache.hop.core.gui.plugin.GuiPlugin;
-import org.apache.hop.metastore.IHopMetaStoreElement;
-import org.apache.hop.metastore.api.IMetaStore;
-import org.apache.hop.metastore.persist.MetaStoreFactory;
+import org.apache.hop.core.exception.HopException;
+import org.apache.hop.metadata.api.HopMetadata;
+import org.apache.hop.metadata.api.HopMetadataProperty;
+import org.apache.hop.metadata.api.IHopMetadata;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.apache.hop.core.exception.HopException;
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
-import org.apache.hop.metastore.persist.MetaStoreElementType;
-import org.neo4j.hop.shared.NeoConnection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@MetaStoreElementType(
+@HopMetadata(
+  key = "neo4j-graph-model",
   name = "Neo4j Graph Model",
-  description = "Description of the nodes, relationships, indexes... of a Neo4j graph"
+  description = "Description of the nodes, relationships, indexes... of a Neo4j graph",
+  iconImage = "neo4j_logo.svg"
 )
-public class GraphModel implements IHopMetaStoreElement<GraphModel> {
+public class GraphModel implements IHopMetadata {
   protected String name;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected String description;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected List<GraphNode> nodes;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   protected List<GraphRelationship> relationships;
 
   public GraphModel() {
@@ -53,22 +50,23 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
 
   /**
    * Create a graph model from a JSON string
+   *
    * @param jsonModelString the model in JSON string format
    */
-  public GraphModel(String jsonModelString) throws HopException {
+  public GraphModel( String jsonModelString ) throws HopException {
     this();
 
     try {
       JSONParser parser = new JSONParser();
       JSONObject jsonModel = (JSONObject) parser.parse( jsonModelString );
 
-      setName( (String) jsonModel.get("name") );
-      setDescription( (String) jsonModel.get("description") );
+      setName( (String) jsonModel.get( "name" ) );
+      setDescription( (String) jsonModel.get( "description" ) );
 
       // Parse all the nodes...
       //
-      JSONArray jsonNodes = (JSONArray) jsonModel.get("nodes");
-      if (jsonNodes!=null) {
+      JSONArray jsonNodes = (JSONArray) jsonModel.get( "nodes" );
+      if ( jsonNodes != null ) {
         for ( Object jsonNode1 : jsonNodes ) {
           JSONObject jsonNode = (JSONObject) jsonNode1;
           GraphNode graphNode = new GraphNode();
@@ -95,9 +93,9 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
 
           JSONObject jsonPresentation = (JSONObject) jsonNode.get( "presentation" );
           if ( jsonPresentation != null ) {
-            long x = (Long)jsonPresentation.get("x");
-            long y = (Long)jsonPresentation.get("y");
-            graphNode.setPresentation( new GraphPresentation( (int)x, (int)y ) );
+            long x = (Long) jsonPresentation.get( "x" );
+            long y = (Long) jsonPresentation.get( "y" );
+            graphNode.setPresentation( new GraphPresentation( (int) x, (int) y ) );
           }
 
           nodes.add( graphNode );
@@ -106,8 +104,8 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
 
       // Parse the relationships...
       //
-      JSONArray jsonRelationships = (JSONArray) jsonModel.get("relationships");
-      if (jsonRelationships!=null) {
+      JSONArray jsonRelationships = (JSONArray) jsonModel.get( "relationships" );
+      if ( jsonRelationships != null ) {
         for ( Object jsonRelationship1 : jsonRelationships ) {
           JSONObject jsonRelationship = (JSONObject) jsonRelationship1;
           GraphRelationship graphRelationship = new GraphRelationship();
@@ -120,7 +118,7 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
           // Parse relationship properties
           //
           JSONArray jsonProperties = (JSONArray) jsonRelationship.get( "properties" );
-          if (jsonProperties!=null) {
+          if ( jsonProperties != null ) {
             for ( JSONObject jsonProperty : (Iterable<JSONObject>) jsonProperties ) {
               graphRelationship.getProperties().add( parseGraphPropertyJson( jsonProperty ) );
             }
@@ -134,11 +132,11 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
   }
 
   private GraphProperty parseGraphPropertyJson( JSONObject jsonProperty ) {
-    GraphProperty graphProperty = new GraphProperty(  );
-    graphProperty.setName( (String) jsonProperty.get("name") );
-    graphProperty.setDescription( (String) jsonProperty.get("description") );
-    graphProperty.setPrimary( (boolean) jsonProperty.get("primary") );
-    graphProperty.setType( GraphPropertyType.parseCode( (String) jsonProperty.get("type") ) );
+    GraphProperty graphProperty = new GraphProperty();
+    graphProperty.setName( (String) jsonProperty.get( "name" ) );
+    graphProperty.setDescription( (String) jsonProperty.get( "description" ) );
+    graphProperty.setPrimary( (boolean) jsonProperty.get( "primary" ) );
+    graphProperty.setType( GraphPropertyType.parseCode( (String) jsonProperty.get( "type" ) ) );
     return graphProperty;
   }
 
@@ -147,7 +145,7 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
     try {
       JSONObject jsonModel = new JSONObject();
       jsonModel.put( "name", name );
-      if ( StringUtils.isNotEmpty(description)) {
+      if ( StringUtils.isNotEmpty( description ) ) {
         jsonModel.put( "description", description );
       }
 
@@ -157,7 +155,7 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
       for ( GraphNode graphNode : nodes ) {
         JSONObject jsonNode = new JSONObject();
         jsonNode.put( "name", graphNode.getName() );
-        if ( StringUtils.isNotEmpty(graphNode.getDescription())) {
+        if ( StringUtils.isNotEmpty( graphNode.getDescription() ) ) {
           jsonNode.put( "description", graphNode.getDescription() );
         }
 
@@ -181,13 +179,13 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
         //
         GraphPresentation presentation = graphNode.getPresentation();
         JSONObject jsonPresentation = new JSONObject();
-        jsonPresentation.put("x", presentation.getX());
-        jsonPresentation.put("y", presentation.getY());
-        jsonNode.put("presentation", jsonPresentation);
+        jsonPresentation.put( "x", presentation.getX() );
+        jsonPresentation.put( "y", presentation.getY() );
+        jsonNode.put( "presentation", jsonPresentation );
 
         // Add the json encoded node object to the list
         //
-        jsonNodes.add(jsonNode);
+        jsonNodes.add( jsonNode );
       }
       jsonModel.put( "nodes", jsonNodes );
 
@@ -197,7 +195,7 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
       for ( GraphRelationship graphRelationship : relationships ) {
         JSONObject jsonRelationship = new JSONObject();
         jsonRelationship.put( "name", graphRelationship.getName() );
-        if (StringUtils.isNotEmpty( graphRelationship.getDescription() )) {
+        if ( StringUtils.isNotEmpty( graphRelationship.getDescription() ) ) {
           jsonRelationship.put( "description", graphRelationship.getDescription() );
         }
         jsonRelationship.put( "label", graphRelationship.getLabel() );
@@ -222,10 +220,10 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
       //
       Gson gson = new GsonBuilder().setPrettyPrinting().create();
       JsonParser jp = new JsonParser();
-      JsonElement je = jp.parse(jsonString);
+      JsonElement je = jp.parse( jsonString );
 
-      return gson.toJson(je);
-    } catch(Exception e) {
+      return gson.toJson( je );
+    } catch ( Exception e ) {
       throw new HopException( "Error encoding model in JSON", e );
     }
   }
@@ -233,7 +231,7 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
   private JSONObject getJsonProperty( GraphProperty graphProperty ) {
     JSONObject jsonProperty = new JSONObject();
     jsonProperty.put( "name", graphProperty.getName() );
-    if (StringUtils.isNotEmpty( graphProperty.getDescription() )) {
+    if ( StringUtils.isNotEmpty( graphProperty.getDescription() ) ) {
       jsonProperty.put( "description", graphProperty.getDescription() );
     }
     jsonProperty.put( "type", GraphPropertyType.getCode( graphProperty.getType() ) );
@@ -254,9 +252,9 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
     return ( (GraphModel) object ).getName().equalsIgnoreCase( name );
   }
 
-  public GraphModel(GraphModel source) {
+  public GraphModel( GraphModel source ) {
     this();
-    replace(source);
+    replace( source );
   }
 
   public void replace( GraphModel source ) {
@@ -267,14 +265,14 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
     //
     nodes = new ArrayList<>();
     for ( GraphNode node : source.getNodes() ) {
-      nodes.add( new GraphNode(node) );
+      nodes.add( new GraphNode( node ) );
     }
 
     // replace relationships
     //
     relationships = new ArrayList<>();
     for ( GraphRelationship relationship : source.getRelationships() ) {
-      relationships.add( new GraphRelationship(relationship) );
+      relationships.add( new GraphRelationship( relationship ) );
     }
   }
 
@@ -382,13 +380,5 @@ public class GraphModel implements IHopMetaStoreElement<GraphModel> {
       }
     }
     return null;
-  }
-
-  @Override public MetaStoreFactory<GraphModel> getFactory( IMetaStore metaStore ) {
-    return createFactory( metaStore );
-  }
-
-  public static final MetaStoreFactory<GraphModel> createFactory( IMetaStore metaStore ) {
-    return new MetaStoreFactory<>( GraphModel.class, metaStore );
   }
 }

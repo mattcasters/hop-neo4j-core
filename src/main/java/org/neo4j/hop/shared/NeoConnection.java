@@ -9,11 +9,9 @@ import org.apache.hop.core.row.value.ValueMetaString;
 import org.apache.hop.core.util.Utils;
 import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.core.variables.Variables;
-import org.apache.hop.metastore.IHopMetaStoreElement;
-import org.apache.hop.metastore.api.IMetaStore;
-import org.apache.hop.metastore.persist.MetaStoreAttribute;
-import org.apache.hop.metastore.persist.MetaStoreElementType;
-import org.apache.hop.metastore.persist.MetaStoreFactory;
+import org.apache.hop.metadata.api.HopMetadata;
+import org.apache.hop.metadata.api.HopMetadataProperty;
+import org.apache.hop.metadata.api.IHopMetadata;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Config;
 import org.neo4j.driver.Driver;
@@ -31,63 +29,74 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@MetaStoreElementType( name = "Neo4j Connection", description = "A shared connection to a Neo4j server" )
-public class NeoConnection extends Variables implements IHopMetaStoreElement<NeoConnection> {
+@HopMetadata(
+  key = "neo4j-connection",
+  name = "Neo4j Connection",
+  description = "A shared connection to a Neo4j server",
+  iconImage = "neo4j_logo.svg"
+)
+public class NeoConnection extends Variables implements IHopMetadata {
   private String name;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String server;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String databaseName;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String boltPort;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String browserPort;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private boolean routing;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String routingVariable;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String routingPolicy;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String username;
 
-  @MetaStoreAttribute( password = true )
+  @HopMetadataProperty( password = true )
   private String password;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private boolean usingEncryption;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
+  private String usingEncryptionVariable;
+
+  @HopMetadataProperty
   private List<String> manualUrls;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String connectionLivenessCheckTimeout;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String maxConnectionLifetime;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String maxConnectionPoolSize;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String connectionAcquisitionTimeout;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String connectionTimeout;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private String maxTransactionRetryTime;
 
-  @MetaStoreAttribute
+  @HopMetadataProperty
   private boolean version4;
+
+  @HopMetadataProperty
+  private String version4Variable;
 
   public NeoConnection() {
     boltPort = "7687";
@@ -114,6 +123,7 @@ public class NeoConnection extends Variables implements IHopMetaStoreElement<Neo
     this.username = source.username;
     this.password = source.password;
     this.usingEncryption = source.usingEncryption;
+    this.usingEncryptionVariable = source.usingEncryptionVariable;
     this.connectionLivenessCheckTimeout = source.connectionLivenessCheckTimeout;
     this.maxConnectionLifetime = source.maxConnectionLifetime;
     this.maxConnectionPoolSize = source.maxConnectionPoolSize;
@@ -121,6 +131,7 @@ public class NeoConnection extends Variables implements IHopMetaStoreElement<Neo
     this.connectionTimeout = source.connectionTimeout;
     this.maxTransactionRetryTime = source.maxTransactionRetryTime;
     this.version4 = source.version4;
+    this.version4Variable = source.version4Variable;
   }
 
   @Override
@@ -290,6 +301,28 @@ public class NeoConnection extends Variables implements IHopMetaStoreElement<Neo
     return urls.toString();
   }
 
+  public boolean encryptionVariableSet() {
+    if ( !Utils.isEmpty( usingEncryptionVariable ) ) {
+      String value = environmentSubstitute( usingEncryptionVariable );
+      if ( !Utils.isEmpty( value ) ) {
+        return ValueMetaString.convertStringToBoolean( value );
+      }
+    }
+    return false;
+  }
+
+  public boolean version4VariableSet() {
+    if ( !Utils.isEmpty( version4Variable ) ) {
+      String value = environmentSubstitute( version4Variable );
+      if ( !Utils.isEmpty( value ) ) {
+        return ValueMetaString.convertStringToBoolean( value );
+      }
+    }
+    return false;
+  }
+
+
+
   public Driver getDriver( ILogChannel log ) {
 
     try {
@@ -298,7 +331,7 @@ public class NeoConnection extends Variables implements IHopMetaStoreElement<Neo
       String realUsername = environmentSubstitute( username );
       String realPassword = Encr.decryptPasswordOptionallyEncrypted( environmentSubstitute( password ) );
       Config.ConfigBuilder configBuilder;
-      if ( usingEncryption ) {
+      if ( encryptionVariableSet() || usingEncryption ) {
         configBuilder = Config.builder().withEncryption();
       } else {
         configBuilder = Config.builder().withoutEncryption();
@@ -666,11 +699,35 @@ public class NeoConnection extends Variables implements IHopMetaStoreElement<Neo
     this.version4 = version4;
   }
 
-  @Override public MetaStoreFactory<NeoConnection> getFactory( IMetaStore metaStore ) {
-    return createFactory( metaStore );
+  /**
+   * Gets usingEncryptionVariable
+   *
+   * @return value of usingEncryptionVariable
+   */
+  public String getUsingEncryptionVariable() {
+    return usingEncryptionVariable;
   }
 
-  public static final MetaStoreFactory<NeoConnection> createFactory( IMetaStore metaStore ) {
-    return new MetaStoreFactory<>( NeoConnection.class, metaStore );
+  /**
+   * @param usingEncryptionVariable The usingEncryptionVariable to set
+   */
+  public void setUsingEncryptionVariable( String usingEncryptionVariable ) {
+    this.usingEncryptionVariable = usingEncryptionVariable;
+  }
+
+  /**
+   * Gets version4Variable
+   *
+   * @return value of version4Variable
+   */
+  public String getVersion4Variable() {
+    return version4Variable;
+  }
+
+  /**
+   * @param version4Variable The version4Variable to set
+   */
+  public void setVersion4Variable( String version4Variable ) {
+    this.version4Variable = version4Variable;
   }
 }
