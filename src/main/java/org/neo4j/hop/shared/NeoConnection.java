@@ -36,6 +36,8 @@ import java.util.concurrent.TimeUnit;
   iconImage = "neo4j_logo.svg"
 )
 public class NeoConnection extends Variables implements IHopMetadata {
+
+  @HopMetadataProperty
   private String name;
 
   @HopMetadataProperty

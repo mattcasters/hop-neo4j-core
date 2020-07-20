@@ -25,6 +25,7 @@ import java.util.List;
   iconImage = "neo4j_logo.svg"
 )
 public class GraphModel implements IHopMetadata {
+  @HopMetadataProperty
   protected String name;
 
   @HopMetadataProperty
