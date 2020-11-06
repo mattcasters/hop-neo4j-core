@@ -5,7 +5,7 @@
   
   <groupId>org.neo4j.hop</groupId>
   <artifactId>hop-neo4j-core</artifactId>
-  <version>2.0.5</version>
+  <version>2.0.6</version>
   <name>${project.artifactId}</name>
   <description>Hop Neo4j core library</description>
   <licenses>
