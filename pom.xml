@@ -17,10 +17,10 @@
     </license>
   </licenses>
   <properties>
-    <hop.version>0.30-SNAPSHOT</hop.version>
+    <hop.version>0.50-SNAPSHOT</hop.version>
     <mockito-all.version>1.9.5</mockito-all.version>
     <junit.version>4.4</junit.version>
-    <neo4j.driver.version>4.0.0</neo4j.driver.version>
+    <neo4j.driver.version>4.1.1</neo4j.driver.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -33,9 +33,10 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-core</artifactId>
       <version>${hop.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.neo4j.driver</groupId>
