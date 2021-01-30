@@ -19,7 +19,7 @@
   <properties>
     <hop.version>0.50-SNAPSHOT</hop.version>
     <mockito-all.version>1.9.5</mockito-all.version>
-    <junit.version>4.4</junit.version>
+    <junit.version>4.13.1</junit.version>
     <neo4j.driver.version>4.1.1</neo4j.driver.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
